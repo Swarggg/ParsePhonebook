@@ -7,9 +7,9 @@
     private String surname;
     private String post;
     private String department;
-    private int telephone;
+    private String telephone;
 
-    Worker (String name, String patronymic, String surname, String post, String department, int telephone) {
+    Worker (String name, String patronymic, String surname, String post, String department, String telephone) {
         this.name=name;
         this.patronymic=patronymic;
         this.surname=surname;
@@ -39,7 +39,7 @@
          return department;
      }
 
-     public int getTelephone() {
+     public String getTelephone() {
          return telephone;
      }
 
