@@ -10,6 +10,7 @@ public class MainParse {
 
     static String inputFile = "src\\phoneBookSrc.html";
 
+
     public static ArrayList getFIO_collection () throws FileNotFoundException {
 
         String patternFIO = "<tbody><tr>";
@@ -24,6 +25,7 @@ public class MainParse {
         int telephone;
         ArrayList<Worker> workerList = new ArrayList<>();
 
+        //TODO write Exeption
         Scanner scanFF = new Scanner(new FileReader(inputFile));
         while (scanFF.hasNextLine()) {
 
