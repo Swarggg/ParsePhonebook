@@ -1,5 +1,5 @@
 /**
- * This programm was created by @swarg
+ * This programm was created by @-=SwarG=-
 */
 
 import java.io.*;
@@ -9,10 +9,27 @@ import java.util.Scanner;
 public class MainParse {
 
     static String inputFile = "src\\phoneBookSrc.html";
+    static String outputFile = "src\\serializedWorkerList";
 
-    public static ArrayList getFIO_collection () {
+    public static void main(String[] args) throws IOException {
 
-        String patternPost = "00006C";
+        //getWorker_collection();
+        serializingList(getWorker_collection(), outputFile);
+
+    }
+
+    public static void serializingList (ArrayList arrayList, String outputFile) throws IOException {
+
+        FileOutputStream fos = new FileOutputStream(outputFile);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+        oos.writeObject(arrayList);
+        oos.close();
+
+    }
+
+    public static ArrayList getWorker_collection() {
+
         String name;
         String patronymic;
         String surname;
@@ -46,13 +63,9 @@ public class MainParse {
                     name=fioParser.next();
                     patronymic=fioParser.next();
 
-                    //System.out.print(name+" ");
-                    //System.out.print(patronymic+" ");
-                    //System.out.println(surname);
-
                     //берем следующую строку, в ней идут должность и подразделение
                     String nextBuf=scanFF.nextLine();
-                    post=nextBuf.subSequence(nextBuf.lastIndexOf(patternPost)+9, nextBuf.lastIndexOf("</span>")).toString();
+                    post=nextBuf.subSequence(nextBuf.lastIndexOf("00006C")+9, nextBuf.lastIndexOf("</span>")).toString();
                     department=nextBuf.subSequence(nextBuf.lastIndexOf("<br>")+4, nextBuf.indexOf("</p>")).toString();
 
                     //берем следующую строку, в ней идет телефон
@@ -73,17 +86,30 @@ public class MainParse {
             System.out.println("File "+inputFile+" not found. Add file and restart programm.");
             }
 
+        /*for (Worker worker: workerList) {
+            String suname=worker.getSurname();
+            String tab="\t\t\t";
+
+            if (suname.length()<6) {
+                tab="\t\t\t\t";
+            }
+
+            if (suname.length()>9) {
+                tab="\t\t";
+            }
+
+            System.out.println("Фамилия: "+suname+"."+tab+"Должность: "+worker.getPost());
+        }*/
 
         System.out.println("______________________________________________");
         System.out.println("Number of elements in collection: "+workerList.size());
+
         return workerList;
     }
 
-    public static void main(String[] args) {
 
-        getFIO_collection();
 
-        }
+
 
 
 }

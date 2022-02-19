@@ -1,4 +1,6 @@
- class Worker {
+import java.io.Serializable;
+
+class Worker implements Serializable {
 
     static int workersCount;
 
