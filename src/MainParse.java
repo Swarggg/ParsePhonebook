@@ -1,32 +1,73 @@
-/**
- * This programm was created by @-=SwarG=-
-*/
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+/**
+ * Класс предназначен для:
+ * 1. парсинга парсинга .html файла в коллекцию
+ * 2. Сериализации коллекции
+ * 3. Записи коллекции в файл
+ *
+ * created by @-=SwarG=-
+ */
 
 public class MainParse {
 
     static String inputFile = "src\\phoneBookSrc.html";
     static String outputFile = "src\\serializedWorkerList";
+    static String fileToWrite = "src\\phonebook2.txt";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         //getWorker_collection();
-        serializingList(getWorker_collection(), outputFile);
-
+        //serializingList(getWorker_collection(), outputFile);
+        writeListToFile(getWorker_collection(),fileToWrite);
     }
 
-    public static void serializingList (ArrayList arrayList, String outputFile) throws IOException {
+    /**
+     *Этот метод предназначен для записи коллекции объектов типа Worker в файл
+     *
+     * @param inputList  коллекция для записи в файл
+     *
+     * @param outputFile  файл, куда записывается коллекция
+     */
+    public static void writeListToFile (ArrayList<Worker> inputList, String outputFile)  {
+        try (FileWriter fileWriter = new FileWriter(fileToWrite, true)) {
 
-        FileOutputStream fos = new FileOutputStream(outputFile);
-        ObjectOutputStream oos = new ObjectOutputStream(fos);
+            for (Worker worker : inputList) {
+                String w = "ФИО: " + worker.getSurname() + " " + worker.getName() + " " + worker.getPatronymic() +
+                        " Tel: " + worker.getTelephone() + "\r\nДолжность: " + worker.getPost() +
+                        "\r\nМесто: " + worker.getDepartment() + "\r\n--------------------------------\r\n";
+                fileWriter.append(w);
+            }
 
-        oos.writeObject(arrayList);
-        oos.close();
-
+        } catch (IOException ioe) {
+            System.out.println("File "+fileToWrite+" for write data not found. Add file and restart programm");
+            }
     }
+
+    /**
+     * Метод для сериализации коллекции
+     * @param arrayList коллекция для сериализации
+     * @param outputFile файл, где сохраняется сериализованная коллекция
+     */
+    public static void serializingList (ArrayList arrayList, String outputFile) {
+
+        try (FileOutputStream fos = new FileOutputStream(outputFile);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+                oos.writeObject(arrayList);
+        } catch (IOException ioe) {
+            System.out.println("File not found");
+            }
+    }
+
+
+    /** Метод для парсинга .html странички
+     * конкретного сайта и получения коллекции объектов
+     * вида  new Worker (name, patronymic, surname, post, department, telephone).
+     * <p>
+     * Со страницами других сайтов работать не будет
+     */
 
     public static ArrayList getWorker_collection() {
 
@@ -74,7 +115,7 @@ public class MainParse {
                     if (!nextBuf.contains("Местн:")) { //исключаем строки, где нет местного телефона
                         telephone=" ";
                     } else {
-                        telephone = nextBuf.subSequence(nextBuf.indexOf("Местн:") + 5, nextBuf.indexOf("<br>")).toString();
+                        telephone = nextBuf.subSequence(nextBuf.indexOf("Местн:") + 7, nextBuf.indexOf("<br>")).toString();
                     }
 
                     //собираем все данные в экземпляр и добавляем в коллекцию
@@ -106,10 +147,5 @@ public class MainParse {
 
         return workerList;
     }
-
-
-
-
-
 
 }
