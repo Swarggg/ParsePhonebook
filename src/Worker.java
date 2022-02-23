@@ -45,5 +45,13 @@ class Worker implements Serializable {
          return telephone;
      }
 
+     @Override
+     public String toString () {
+        String s= "ФИО: "+this.getSurname()+" "+this.getName()+" "+this.getPatronymic()+"\r\n"+
+        "Должность: "+this.getPost()+"\r\n"+
+                "Тел: "+this.getTelephone()+"\r\n"+
+                "Место: "+this.getDepartment();
+        return s;
+     }
 
 }

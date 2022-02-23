@@ -13,15 +13,15 @@ import java.util.Scanner;
 
 public class MainParse {
 
-    static String inputFile = "src\\phoneBookSrc.html";
+    static String inputFile = "src\\phoneBookSrc1.html";
     static String outputFile = "src\\serializedWorkerList";
     static String fileToWrite = "src\\phonebook2.txt";
 
     public static void main(String[] args) {
 
         //getWorker_collection();
-        //serializingList(getWorker_collection(), outputFile);
-        writeListToFile(getWorker_collection(),fileToWrite);
+        serializingList(getWorker_collection(), outputFile);
+        //writeListToFile(getWorker_collection(),fileToWrite);
     }
 
     /**
@@ -56,6 +56,7 @@ public class MainParse {
         try (FileOutputStream fos = new FileOutputStream(outputFile);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
                 oos.writeObject(arrayList);
+
         } catch (IOException ioe) {
             System.out.println("File not found");
             }

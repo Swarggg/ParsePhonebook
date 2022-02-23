@@ -1,8 +1,10 @@
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DeserializingArrList {
 
@@ -27,7 +29,23 @@ public class DeserializingArrList {
 
         }
         System.out.println("Number of elements in collection: "+workers.size());
-        System.out.println(workers.get(0).getSurname());
+        //System.out.println(workers.get(0).getSurname());
+
+
+       List<String> sd = workers.stream()
+                .filter(n->n.getName().contains("атал"))
+                //.sorted()
+                //.filter(m->m.getPatronymic().equals("Александровна"))
+                .map(m->m.toString())
+                .collect(Collectors.toList());
+
+        System.out.println("Всего "+sd.size());
+        for (String c: sd
+             ) {
+            System.out.println(c);
+            System.out.println("---------------");
+        }
+
 
     }
 
