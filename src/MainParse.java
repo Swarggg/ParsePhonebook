@@ -1,4 +1,10 @@
+import com.mysql.cj.jdbc.Driver;
+
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -19,9 +25,43 @@ public class MainParse {
 
     public static void main(String[] args) {
 
-        //getWorker_collection();
-        serializingList(getWorker_collection(), outputFile);
+        /**
+         * загрузка драйвера подключения к БД
+         */
+        try {
+            Driver driver = new com.mysql.cj.jdbc.Driver();
+            DriverManager.registerDriver(driver);
+
+        } catch (SQLException sqle) {
+            System.err.println("Driver not registered");
+        }
+
+        //getWorker_collection(); //по выполнению метода получаем коллекцию workerList
+
+        //serializingList(getWorker_collection(), outputFile);
         //writeListToFile(getWorker_collection(),fileToWrite);
+
+        Worker oneOfWorker = (Worker) getWorker_collection().get(3);
+        String nameOfWorker = oneOfWorker.getName();
+
+        /**
+         * подключение к БД
+         */
+        try (Connection connectionAW = DriverManager.getConnection(ConnectionData.URL, ConnectionData.USERNAME, ConnectionData.PASSWORD);
+             Statement statementAW = connectionAW.createStatement())  {
+
+            statementAW.execute("INSERT INTO workers (name, patro, surname, telephone) VALUES ('"+nameOfWorker+"', 'Palkovna', 'Lesgustova', '2342')");
+
+        }
+
+
+        catch (SQLException qwe) {
+            qwe.printStackTrace();
+        }
+
+
+
+
     }
 
     /**
@@ -81,7 +121,7 @@ public class MainParse {
         String department;
         String telephone;
 
-        ArrayList<Worker> workerList = new ArrayList<>();
+        ArrayList <Worker> workerList = new ArrayList<>();
 
 
         try {
