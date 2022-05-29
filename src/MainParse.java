@@ -1,10 +1,7 @@
 import com.mysql.cj.jdbc.Driver;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -13,6 +10,7 @@ import java.util.Scanner;
  * 1. парсинга парсинга .html файла в коллекцию
  * 2. Сериализации коллекции
  * 3. Записи коллекции в файл
+ * 4. Записи коллекции в базу данных MySQL
  *
  * created by @-=SwarG=-
  */
@@ -21,13 +19,13 @@ public class MainParse {
 
     static String inputFile = "src\\phoneBookSrc1.html";
     static String outputFile = "src\\serializedWorkerList";
-    static String fileToWrite = "src\\phonebook2.txt";
+    static String fileToWrite = "src\\phonebook4.txt";
 
     public static void main(String[] args) {
 
         /**
          * загрузка драйвера подключения к БД
-         */
+
         try {
             Driver driver = new com.mysql.cj.jdbc.Driver();
             DriverManager.registerDriver(driver);
@@ -35,31 +33,51 @@ public class MainParse {
         } catch (SQLException sqle) {
             System.err.println("Driver not registered");
         }
-
+         */
         //getWorker_collection(); //по выполнению метода получаем коллекцию workerList
 
         //serializingList(getWorker_collection(), outputFile);
         //writeListToFile(getWorker_collection(),fileToWrite);
 
-        Worker oneOfWorker = (Worker) getWorker_collection().get(3);
-        String nameOfWorker = oneOfWorker.getName();
+        writeCollectionToDB(getWorker_collection());
 
-        /**
-         * подключение к БД
-         */
-        try (Connection connectionAW = DriverManager.getConnection(ConnectionData.URL, ConnectionData.USERNAME, ConnectionData.PASSWORD);
-             Statement statementAW = connectionAW.createStatement())  {
+    }
 
-            statementAW.execute("INSERT INTO workers (name, patro, surname, telephone) VALUES ('"+nameOfWorker+"', 'Palkovna', 'Lesgustova', '2342')");
+    /**
+     * Метод записи коллекции в базу данных
+     */
+    public static void writeCollectionToDB (ArrayList workersCollection) {
 
-        }
+            /**
+             * подключение к БД и запись
+             */
+            try (Connection connectionAW = DriverManager.getConnection(ConnectionData.URL, ConnectionData.USERNAME, ConnectionData.PASSWORD);
+                 Statement statementAW = connectionAW.createStatement()) {
 
+                //удаление старых записей
+                statementAW.execute("DELETE FROM avro_workers.workers;");
 
-        catch (SQLException qwe) {
-            qwe.printStackTrace();
-        }
+                //сброс счетчика id к значению 1
+                statementAW.execute("ALTER TABLE `avro_workers`.`workers` AUTO_INCREMENT = 1 ;");
 
+                for (int i=0; i< workersCollection.size(); i++) {
 
+                    Worker oneOfWorker = (Worker) workersCollection.get(i);
+
+                    String insertQuery = "INSERT INTO workers (name, patro, surname, telephone, post) VALUES (?, ?, ?, ?, ?)";
+
+                    PreparedStatement insertPrepStatement = connectionAW.prepareStatement(insertQuery);
+                    insertPrepStatement.setString(1, oneOfWorker.getName());
+                    insertPrepStatement.setString(2, oneOfWorker.getPatronymic());
+                    insertPrepStatement.setString(3, oneOfWorker.getSurname());
+                    insertPrepStatement.setString(4, oneOfWorker.getTelephone());
+                    insertPrepStatement.setString(5, oneOfWorker.getPost());
+                    insertPrepStatement.execute();
+                }
+
+            } catch (SQLException qwe) {
+                qwe.printStackTrace();
+            }
 
 
     }
@@ -154,7 +172,7 @@ public class MainParse {
                     nextBuf= scanFF.nextLine();
 
                     if (!nextBuf.contains("Местн:")) { //исключаем строки, где нет местного телефона
-                        telephone=" ";
+                        telephone="";
                     } else {
                         telephone = nextBuf.subSequence(nextBuf.indexOf("Местн:") + 7, nextBuf.indexOf("<br>")).toString();
                     }
@@ -167,21 +185,6 @@ public class MainParse {
         }   catch (FileNotFoundException fnfe) {
             System.out.println("File "+inputFile+" not found. Add file and restart programm.");
             }
-
-        /*for (Worker worker: workerList) {
-            String suname=worker.getSurname();
-            String tab="\t\t\t";
-
-            if (suname.length()<6) {
-                tab="\t\t\t\t";
-            }
-
-            if (suname.length()>9) {
-                tab="\t\t";
-            }
-
-            System.out.println("Фамилия: "+suname+"."+tab+"Должность: "+worker.getPost());
-        }*/
 
         System.out.println("______________________________________________");
         System.out.println("Number of elements in collection: "+workerList.size());
