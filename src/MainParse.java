@@ -82,6 +82,25 @@ public class MainParse {
 
     }
 
+
+    /**
+     * Метод формирует таблицу с должностями
+     */
+    public static void getEmployeesPosts (ArrayList workersCollection) {
+        try (Connection connectionToLocalHost = DriverManager.getConnection(ConnectionData.URL, ConnectionData.USERNAME, ConnectionData.PASSWORD);
+        Statement statementLH = connectionToLocalHost.createStatement())
+        {
+            statementLH.execute("USE 'avro_workers';");
+            statementLH.execute("CREATE TABLE IF NOT EXIST 'workersPosts' ('post_id' int(4) NOT NULL AUTO_INCREMENT, 'post' varchar(150) NOT NULL);");
+
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+    }
+
+
+
     /**
      *Этот метод предназначен для записи коллекции объектов типа Worker в файл
      *
@@ -104,6 +123,8 @@ public class MainParse {
             }
     }
 
+
+
     /**
      * Метод для сериализации коллекции
      * @param arrayList коллекция для сериализации
@@ -121,13 +142,13 @@ public class MainParse {
     }
 
 
+
     /** Метод для парсинга .html странички
      * конкретного сайта и получения коллекции объектов
      * вида  new Worker (name, patronymic, surname, post, department, telephone).
      * <p>
      * Со страницами других сайтов работать не будет
      */
-
     public static ArrayList getWorker_collection() {
 
         String name;
