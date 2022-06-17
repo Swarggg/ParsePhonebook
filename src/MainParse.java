@@ -96,12 +96,18 @@ public class MainParse {
             statementLH.execute("CREATE TABLE IF NOT EXISTS workers_posts (post_id int(4) NOT NULL AUTO_INCREMENT PRIMARY KEY, post varchar(150) NOT NULL);");
             //statementLH.execute("DROP TABLE workersposts;");
 
-            String insertQuery = "INSERT INTO workers (name, patro, surname, telephone, post) VALUES (?, ?, ?, ?, ?)";
+
 
             for (int i=0; i< workersCollection.size(); i++) {
                 Worker oneOfWorker= (Worker) workersCollection.get(i);
 
-                PreparedStatement preparedStatement=
+                String insertQuery = "INSERT INTO workers_posts (post) VALUES (?)";
+
+                PreparedStatement preparedStatement= connectionToLocalHost.prepareStatement(insertQuery);
+
+                preparedStatement.setString(1, oneOfWorker.getPost());
+
+                preparedStatement.execute();
 
             }
 
