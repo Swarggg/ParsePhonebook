@@ -39,7 +39,9 @@ public class MainParse {
         //serializingList(getWorker_collection(), outputFile);
         //writeListToFile(getWorker_collection(),fileToWrite);
 
-        writeCollectionToDB(getWorker_collection());
+        //writeCollectionToDB(getWorker_collection());
+
+        getEmployeesPosts(getWorker_collection());
 
     }
 
@@ -90,9 +92,18 @@ public class MainParse {
         try (Connection connectionToLocalHost = DriverManager.getConnection(ConnectionData.URL, ConnectionData.USERNAME, ConnectionData.PASSWORD);
         Statement statementLH = connectionToLocalHost.createStatement())
         {
-            statementLH.execute("USE 'avro_workers';");
-            statementLH.execute("CREATE TABLE IF NOT EXIST 'workersPosts' ('post_id' int(4) NOT NULL AUTO_INCREMENT, 'post' varchar(150) NOT NULL);");
+            statementLH.execute("USE avro_workers;");
+            statementLH.execute("CREATE TABLE IF NOT EXISTS workers_posts (post_id int(4) NOT NULL AUTO_INCREMENT PRIMARY KEY, post varchar(150) NOT NULL);");
+            //statementLH.execute("DROP TABLE workersposts;");
 
+            String insertQuery = "INSERT INTO workers (name, patro, surname, telephone, post) VALUES (?, ?, ?, ?, ?)";
+
+            for (int i=0; i< workersCollection.size(); i++) {
+                Worker oneOfWorker= (Worker) workersCollection.get(i);
+
+                PreparedStatement preparedStatement=
+
+            }
 
         } catch (SQLException sqle) {
             sqle.printStackTrace();
