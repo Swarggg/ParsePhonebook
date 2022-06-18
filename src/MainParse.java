@@ -3,6 +3,7 @@ import com.mysql.cj.jdbc.Driver;
 import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 
 /**
@@ -39,9 +40,9 @@ public class MainParse {
         //serializingList(getWorker_collection(), outputFile);
         //writeListToFile(getWorker_collection(),fileToWrite);
 
-        //writeCollectionToDB(getWorker_collection());
+        writeCollectionToDB(getWorker_collection());
 
-        getEmployeesPosts(getWorker_collection());
+        //makeEmployeesPostsTable(getWorker_collection());
 
     }
 
@@ -56,25 +57,32 @@ public class MainParse {
             try (Connection connectionAW = DriverManager.getConnection(ConnectionData.URL, ConnectionData.USERNAME, ConnectionData.PASSWORD);
                  Statement statementAW = connectionAW.createStatement()) {
 
-                //удаление старых записей
+                //удаление старых записей в основной таблице
                 statementAW.execute("DELETE FROM avro_workers.workers;");
 
-                //сброс счетчика id к значению 1
+                //сброс в основной таблице счетчика id к значению 1
                 statementAW.execute("ALTER TABLE `avro_workers`.`workers` AUTO_INCREMENT = 1 ;");
 
                 for (int i=0; i< workersCollection.size(); i++) {
 
                     Worker oneOfWorker = (Worker) workersCollection.get(i);
 
-                    String insertQuery = "INSERT INTO workers (name, patro, surname, telephone, post) VALUES (?, ?, ?, ?, ?)";
+                    //получение ID должности из таблицы должностей
+                    String getPostID = "SELECT * FROM workers_posts WHERE post=\'"+oneOfWorker.getPost()+"\'";
+                    ResultSet rs = statementAW.executeQuery(getPostID);
+                    rs.next();
+                    int workerPostID = rs.getInt(1);
 
+                    //запись в основную таблицу
+                    String insertQuery = "INSERT INTO workers (name, patro, surname, telephone, post_id) VALUES (?, ?, ?, ?, ?)";
                     PreparedStatement insertPrepStatement = connectionAW.prepareStatement(insertQuery);
                     insertPrepStatement.setString(1, oneOfWorker.getName());
                     insertPrepStatement.setString(2, oneOfWorker.getPatronymic());
                     insertPrepStatement.setString(3, oneOfWorker.getSurname());
                     insertPrepStatement.setString(4, oneOfWorker.getTelephone());
-                    insertPrepStatement.setString(5, oneOfWorker.getPost());
+                    insertPrepStatement.setInt(5, workerPostID);
                     insertPrepStatement.execute();
+
                 }
 
             } catch (SQLException qwe) {
@@ -88,7 +96,16 @@ public class MainParse {
     /**
      * Метод формирует таблицу с должностями
      */
-    public static void getEmployeesPosts (ArrayList workersCollection) {
+    public static void makeEmployeesPostsTable (ArrayList workersCollection) {
+
+        //формирование коллекции с должностями (без повторений) из общей коллекции объектов
+        HashSet <String> uniquePosts = new HashSet<>();
+        for (int i=0; i< workersCollection.size(); i++) {
+            Worker oneOfWorker = (Worker) workersCollection.get(i);
+            uniquePosts.add(oneOfWorker.getPost());
+        }
+
+
         try (Connection connectionToLocalHost = DriverManager.getConnection(ConnectionData.URL, ConnectionData.USERNAME, ConnectionData.PASSWORD);
         Statement statementLH = connectionToLocalHost.createStatement())
         {
@@ -97,16 +114,14 @@ public class MainParse {
             //statementLH.execute("DROP TABLE workersposts;");
 
 
-
-            for (int i=0; i< workersCollection.size(); i++) {
-                Worker oneOfWorker= (Worker) workersCollection.get(i);
+            //создание таблицы со всеми должностями
+            for (int i=0; i< uniquePosts.size(); i++) {
 
                 String insertQuery = "INSERT INTO workers_posts (post) VALUES (?)";
 
                 PreparedStatement preparedStatement= connectionToLocalHost.prepareStatement(insertQuery);
 
-                preparedStatement.setString(1, oneOfWorker.getPost());
-
+                preparedStatement.setString(1, (String) uniquePosts.toArray()[i]);
                 preparedStatement.execute();
 
             }
