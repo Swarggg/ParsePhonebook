@@ -1,5 +1,7 @@
 import com.mysql.cj.jdbc.Driver;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,6 +25,10 @@ public class MainParse {
     static String fileToWrite = "src\\phonebook4.txt";
 
     public static void main(String[] args) {
+
+        //Главное окно программы
+        ParserFrame.frameDraw (new ParserFrame());
+
 
         /**
          * загрузка драйвера подключения к БД
@@ -240,7 +246,9 @@ public class MainParse {
             }
 
         System.out.println("______________________________________________");
-        System.out.println("Number of elements in collection: "+workerList.size());
+        //System.out.println("Number of elements in collection: "+workerList.size());
+
+
 
         return workerList;
     }
