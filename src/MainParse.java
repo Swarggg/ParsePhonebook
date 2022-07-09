@@ -26,8 +26,15 @@ public class MainParse {
 
     public static void main(String[] args) {
 
-        //Главное окно программы
-        ParserFrame.frameDraw (new ParserFrame());
+        //Запуск главного окна программы (создание объекта в потоке диспечеризации событий,
+        // а не в главном потоке исполнения приложения)
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new ParserFrame();
+            }
+        });
+
+       // ParserFrame.frameDraw ();
 
 
         /**
@@ -46,7 +53,7 @@ public class MainParse {
         //serializingList(getWorker_collection(), outputFile);
         //writeListToFile(getWorker_collection(),fileToWrite);
 
-        writeCollectionToDB(getWorker_collection());
+        //writeCollectionToDB(getWorker_collection());
 
         //makeEmployeesPostsTable(getWorker_collection());
 
