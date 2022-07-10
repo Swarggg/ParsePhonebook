@@ -2,6 +2,9 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 
 public class ParserFrame {
@@ -12,6 +15,8 @@ public class ParserFrame {
     private static final int FRM_LOC_Y = 100;
     private static final int FRM_WIDTH = 400;
     private static final int FRM_HEIGHT = 400;
+
+    static File inputFile;
 
     // static String getWorklistSIze (ArrayList MainParse.getWorker_collection())
     public ParserFrame() {
@@ -24,14 +29,12 @@ public class ParserFrame {
         Dimension labelSize = new Dimension(280, 20);
 
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout( new BorderLayout());
+        mainPanel.setLayout(new BorderLayout());
 
         JPanel aligmentPanel = new JPanel(new FlowLayout());
         aligmentPanel.setBorder(BorderFactory.createTitledBorder(solidBorder,"Alignment panel", TitledBorder.CENTER, 0));
         //aligmentPanel.setAlignmentX(1.0f);
         //aligmentPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-
-
 
         //tfMsg = new JTextField("Number of elements in collection: "+MainParse.getWorker_collection().size());
         //taMain = new JTextArea(FRM_HEIGHT/19, 50);
@@ -41,9 +44,10 @@ public class ParserFrame {
        // taMain.setLineWrap(true);
        // taMain.setEditable(false);
 
-        JButton btnSend = new JButton();
-        btnSend.setText("Send");
-        btnSend.setToolTipText("Broadcast message");
+
+
+        //btnSetSourceFile.setSize(2,2);
+        //btnSend.setToolTipText("Broadcast message");
        /* btnSend.addActionListener(e -> {
             try {
                 btnSend_Handler();
@@ -60,23 +64,43 @@ public class ParserFrame {
         mainFrame.setSize(FRM_WIDTH, FRM_HEIGHT);
         mainFrame.setResizable(true);
 
-        JLabel mainLabel1 = new JLabel("Number of elements in collection: "+MainParse.getWorker_collection().size(),SwingConstants.LEFT);
+        JLabel mainLabel1 = new JLabel("Number of elements in collection: ",SwingConstants.LEFT);
         mainLabel1.setSize(labelSize);
         mainLabel1.setBorder(solidBorder);
         mainLabel1.setVerticalAlignment(JLabel.NORTH);
         //mainLabel1.setHorizontalAlignment();
         aligmentPanel.add(mainLabel1);
 
-        JLabel mainLabel2 = new JLabel("Data load from: "+MainParse.inputFile);
+        JLabel mainLabel2 = new JLabel("Data load from: ");
         mainLabel2.setVerticalAlignment(JLabel.NORTH);
         mainLabel2.setHorizontalAlignment(JLabel.LEFT);
         aligmentPanel.add(mainLabel2);
+
+        JButton btnSetSourceFile = new JButton();
+        btnSetSourceFile.setText("Set source file");
+        JFileChooser fileChooser = new JFileChooser();
+
+       /* if (ret == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            /*
+             * Какие-то действия.
+
+        }
+        */
+
+        btnSetSourceFile.addActionListener((ae)->{int ret=  fileChooser.showDialog(null, "Открыть файл");
+            if (ret == JFileChooser.APPROVE_OPTION) {
+                inputFile = fileChooser.getSelectedFile();
+            }
+        }
+        );
 
         //frame.getContentPane().add(BorderLayout.NORTH, spMain);
 
         //mainFrame.getContentPane().add(BorderLayout.CENTER, tfMsg);
         //mainFrame.getContentPane().add(BorderLayout.EAST, btnSend);
         mainFrame.getContentPane().add(aligmentPanel);
+        mainFrame.getContentPane().add(BorderLayout.SOUTH, btnSetSourceFile);
         mainFrame.setVisible(true);
     }
 

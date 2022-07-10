@@ -20,7 +20,8 @@ import java.util.Scanner;
 
 public class MainParse {
 
-    static String inputFile = "src\\phoneBookSrc1.html";
+    //static String inputFile = "src\\phoneBookSrc1.html";
+
     static String outputFile = "src\\serializedWorkerList";
     static String fileToWrite = "src\\phonebook4.txt";
 
@@ -209,7 +210,7 @@ public class MainParse {
 
 
         try {
-            Scanner scanFF = new Scanner(new FileReader(inputFile));
+            Scanner scanFF = new Scanner(new FileReader(ParserFrame.inputFile.getAbsoluteFile()));
 
                 while (scanFF.hasNextLine()) {
                 buffStr = scanFF.nextLine();
@@ -249,7 +250,7 @@ public class MainParse {
                 } //close while
 
         }   catch (FileNotFoundException fnfe) {
-            System.out.println("File "+inputFile+" not found. Add file and restart programm.");
+            System.out.println("File "+ParserFrame.inputFile.getAbsolutePath()+" not found. Add file and restart programm.");
             }
 
         System.out.println("______________________________________________");
