@@ -16,7 +16,7 @@ public class ParserFrame {
     private static final int FRM_WIDTH = 400;
     private static final int FRM_HEIGHT = 400;
 
-    static File inputFile;
+    static String inputFile;
 
     // static String getWorklistSIze (ArrayList MainParse.getWorker_collection())
     public ParserFrame() {
@@ -64,7 +64,7 @@ public class ParserFrame {
         mainFrame.setSize(FRM_WIDTH, FRM_HEIGHT);
         mainFrame.setResizable(true);
 
-        JLabel mainLabel1 = new JLabel("Number of elements in collection: ",SwingConstants.LEFT);
+        JLabel mainLabel1 = new JLabel("Number of elements in collection: ", SwingConstants.LEFT);
         mainLabel1.setSize(labelSize);
         mainLabel1.setBorder(solidBorder);
         mainLabel1.setVerticalAlignment(JLabel.NORTH);
@@ -80,27 +80,27 @@ public class ParserFrame {
         btnSetSourceFile.setText("Set source file");
         JFileChooser fileChooser = new JFileChooser();
 
-       /* if (ret == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            /*
-             * Какие-то действия.
 
-        }
-        */
 
         btnSetSourceFile.addActionListener((ae)->{int ret=  fileChooser.showDialog(null, "Открыть файл");
             if (ret == JFileChooser.APPROVE_OPTION) {
-                inputFile = fileChooser.getSelectedFile();
+                inputFile = fileChooser.getSelectedFile().getAbsolutePath();
+                mainLabel1.setText("inputFile: ");
             }
         }
         );
+
+        JButton btnGo = new JButton();
+        btnSetSourceFile.setText("Go");
+        btnGo.addActionListener((ae)->MainParse.getWorker_collection());
 
         //frame.getContentPane().add(BorderLayout.NORTH, spMain);
 
         //mainFrame.getContentPane().add(BorderLayout.CENTER, tfMsg);
         //mainFrame.getContentPane().add(BorderLayout.EAST, btnSend);
         mainFrame.getContentPane().add(aligmentPanel);
-        mainFrame.getContentPane().add(BorderLayout.SOUTH, btnSetSourceFile);
+        mainFrame.getContentPane().add(BorderLayout.NORTH, btnSetSourceFile);
+        mainFrame.getContentPane().add(BorderLayout.EAST, btnGo);
         mainFrame.setVisible(true);
     }
 
