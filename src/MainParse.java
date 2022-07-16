@@ -10,12 +10,12 @@ import java.util.Scanner;
 
 /**
  * Класс предназначен для:
- * 1. парсинга парсинга .html файла в коллекцию
- * 2. Сериализации коллекции
- * 3. Записи коллекции в файл
- * 4. Записи коллекции в базу данных MySQL
+ * <p> 1. парсинга парсинга .html файла в коллекцию
+ * <p> 2. Сериализации коллекции
+ * <p> 3. Записи коллекции в файл
+ * <p> 4. Записи коллекции в базу данных MySQL
  *
- * created by @-=SwarG=-
+ * @author -=SwarG=-
  */
 
 public class MainParse {
@@ -39,8 +39,8 @@ public class MainParse {
         inputFile = ParserFrame.inputFile;
 
 
-        /**
-         * загрузка драйвера подключения к БД
+        /*
+         // загрузка драйвера подключения к БД
 
         try {
             Driver driver = new com.mysql.cj.jdbc.Driver();

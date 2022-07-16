@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 
-public class ParserFrame {
+public class ParserFrame extends JFrame {
     private static JTextArea taMain;
     private static JTextField tfMsg;
     private static final String PFRAME_TITLE = "Phonebook parser";
@@ -16,71 +16,53 @@ public class ParserFrame {
     private static final int FRM_WIDTH = 400;
     private static final int FRM_HEIGHT = 400;
 
-    static String inputFile;
+    static String inputFile = "---";
 
     // static String getWorklistSIze (ArrayList MainParse.getWorker_collection())
-    public ParserFrame() {
+    public ParserFrame()  {
 
         JFrame mainFrame = new JFrame();
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        //Border
         Border solidBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
 
+        //Dimension
         Dimension labelSize = new Dimension(280, 20);
 
+        //Main panel
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-
-        JPanel aligmentPanel = new JPanel(new FlowLayout());
-        aligmentPanel.setBorder(BorderFactory.createTitledBorder(solidBorder,"Alignment panel", TitledBorder.CENTER, 0));
-        //aligmentPanel.setAlignmentX(1.0f);
-        //aligmentPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-
-        //tfMsg = new JTextField("Number of elements in collection: "+MainParse.getWorker_collection().size());
-        //taMain = new JTextArea(FRM_HEIGHT/19, 50);
-
-       // JScrollPane spMain = new JScrollPane(taMain);
-       // spMain.setLocation(0,0);
-       // taMain.setLineWrap(true);
-       // taMain.setEditable(false);
-
-
-
-        //btnSetSourceFile.setSize(2,2);
-        //btnSend.setToolTipText("Broadcast message");
-       /* btnSend.addActionListener(e -> {
-            try {
-                btnSend_Handler();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            //taMain.append("button works");
-        });*/
-       //
-
-
+        mainPanel.setLayout(new FlowLayout());
         mainFrame.setTitle(PFRAME_TITLE);
         mainFrame.setLocation(FRM_LOC_X, FRM_LOC_Y);
         mainFrame.setSize(FRM_WIDTH, FRM_HEIGHT);
         mainFrame.setResizable(true);
 
-        JLabel mainLabel1 = new JLabel("Number of elements in collection: ", SwingConstants.LEFT);
+        //Inner panel
+        JPanel aligmentPanel = new JPanel();
+        aligmentPanel.setBorder(BorderFactory.createTitledBorder(solidBorder,"Alignment panel", TitledBorder.CENTER, 0));
+
+
+        //Label 1
+        JLabel mainLabel1 = new JLabel("Number of elements in collection: ", SwingConstants.RIGHT);
         mainLabel1.setSize(labelSize);
         mainLabel1.setBorder(solidBorder);
         mainLabel1.setVerticalAlignment(JLabel.NORTH);
-        //mainLabel1.setHorizontalAlignment();
-        aligmentPanel.add(mainLabel1);
+        mainLabel1.setHorizontalAlignment(JLabel.LEFT);
+        //aligmentPanel.add(mainLabel1);
 
-        JLabel mainLabel2 = new JLabel("Data load from: ");
+        //Label2
+        JLabel mainLabel2 = new JLabel("Data load from: "+inputFile);
         mainLabel2.setVerticalAlignment(JLabel.NORTH);
         mainLabel2.setHorizontalAlignment(JLabel.LEFT);
-        aligmentPanel.add(mainLabel2);
+        //aligmentPanel.add(mainLabel2);
 
+        //Button to set Source File
         JButton btnSetSourceFile = new JButton();
-        btnSetSourceFile.setText("Set source file");
+        btnSetSourceFile.setSize(100,20);
+        btnSetSourceFile.setText("Set path to source file");
         JFileChooser fileChooser = new JFileChooser();
-
-
+        aligmentPanel.add(btnSetSourceFile);
 
         btnSetSourceFile.addActionListener((ae)->{int ret=  fileChooser.showDialog(null, "Открыть файл");
             if (ret == JFileChooser.APPROVE_OPTION) {
@@ -90,17 +72,45 @@ public class ParserFrame {
         }
         );
 
+
+        //Button to START parsing
         JButton btnGo = new JButton();
-        btnSetSourceFile.setText("Go");
+        btnGo.setText("Start parsing");
         btnGo.addActionListener((ae)->MainParse.getWorker_collection());
+        //aligmentPanel.add(btnGo);
 
-        //frame.getContentPane().add(BorderLayout.NORTH, spMain);
+        //Устанавливаем диспетчер компоновки для //Inner panel
+        GridBagLayout gbl = new GridBagLayout();
+        GridBagConstraints gbc = new GridBagConstraints();
+        aligmentPanel.setLayout(gbl);
 
-        //mainFrame.getContentPane().add(BorderLayout.CENTER, tfMsg);
-        //mainFrame.getContentPane().add(BorderLayout.EAST, btnSend);
+        //ограничения на элемент - лэйбл
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbl.setConstraints(mainLabel2, gbc);
+
+        //ограничения на элемент - //Button to set Source File
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridx = 100;
+        gbc.gridy = 0;
+        gbl.setConstraints(btnSetSourceFile, gbc);
+
+        //ограничения на элемент - //Button to START parsing
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridx = 100;
+        gbc.gridy = 100;
+        gbl.setConstraints(btnSetSourceFile, gbc);
+
+        //введение элементов
+        aligmentPanel.add(mainLabel2);
+        aligmentPanel.add(btnSetSourceFile);
+        aligmentPanel.add(btnGo);
+
+        //вводип панель на главный фрейм
         mainFrame.getContentPane().add(aligmentPanel);
-        mainFrame.getContentPane().add(BorderLayout.NORTH, btnSetSourceFile);
-        mainFrame.getContentPane().add(BorderLayout.EAST, btnGo);
+
+        //показываем глайвный фрейм
         mainFrame.setVisible(true);
     }
 
