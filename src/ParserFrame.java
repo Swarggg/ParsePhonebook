@@ -1,11 +1,13 @@
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.lang.Object;
 
 public class ParserFrame extends JFrame {
     private static JTextArea taMain;
@@ -23,51 +25,69 @@ public class ParserFrame extends JFrame {
 
         JFrame mainFrame = new JFrame();
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        //Border
-        Border solidBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
-
-        //Dimension
-        Dimension labelSize = new Dimension(280, 20);
-
-        //Main panel
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new FlowLayout());
+        mainFrame.setLayout(new BorderLayout());
         mainFrame.setTitle(PFRAME_TITLE);
         mainFrame.setLocation(FRM_LOC_X, FRM_LOC_Y);
         mainFrame.setSize(FRM_WIDTH, FRM_HEIGHT);
         mainFrame.setResizable(true);
 
-        //Inner panel
-        JPanel aligmentPanel = new JPanel();
-        aligmentPanel.setBorder(BorderFactory.createTitledBorder(solidBorder,"Alignment panel", TitledBorder.CENTER, 0));
+        //Border
+        Border solidBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
 
 
+        //Dimension
+        Dimension labelSize = new Dimension(28, 20);
+
+        //Buttons panel
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new VerticalLayout());
+        Border borderButtonPanel = BorderFactory.createTitledBorder(solidBorder, "Buttons panel", TitledBorder.CENTER, 0);
+        buttonPanel.setBorder(borderButtonPanel);
+
+        //Status Panel
+        JPanel statusPanel = new JPanel();
+        Border borderStatusPanel= BorderFactory.createTitledBorder(solidBorder, "Status panel", TitledBorder.CENTER, 0);
+        statusPanel.setPreferredSize(labelSize);
+        statusPanel.setBorder(borderStatusPanel);
+
+/*
+        //Main Text area
+        JTextField mainTextField = new JTextField("Results will replace here", JTextField.NORTH, 20);
+        Border borderTextField = BorderFactory.createTitledBorder(solidBorder, "Text field", TitledBorder.CENTER, 0);
+        mainTextField.setBorder(borderTextField);
+*/
+
+        //Label Data load from
+        JLabel labelSourceFile = new JLabel("Data load from: "+inputFile);
+        statusPanel.setBorder(solidBorder);
+        //statusPanel.setPreferredSize();
+        statusPanel.add(labelSourceFile);
+
+
+
+        /*
         //Label 1
         JLabel mainLabel1 = new JLabel("Number of elements in collection: ", SwingConstants.RIGHT);
         mainLabel1.setSize(labelSize);
         mainLabel1.setBorder(solidBorder);
         mainLabel1.setVerticalAlignment(JLabel.NORTH);
         mainLabel1.setHorizontalAlignment(JLabel.LEFT);
-        //aligmentPanel.add(mainLabel1);
+        //buttonPanel.add(mainLabel1);
+        */
 
-        //Label2
-        JLabel mainLabel2 = new JLabel("Data load from: "+inputFile);
-        mainLabel2.setVerticalAlignment(JLabel.NORTH);
-        mainLabel2.setHorizontalAlignment(JLabel.LEFT);
-        //aligmentPanel.add(mainLabel2);
+        //buttonPanel.add(labelSourceFile);
 
         //Button to set Source File
         JButton btnSetSourceFile = new JButton();
-        btnSetSourceFile.setSize(100,20);
+
         btnSetSourceFile.setText("Set path to source file");
         JFileChooser fileChooser = new JFileChooser();
-        aligmentPanel.add(btnSetSourceFile);
+        buttonPanel.add(btnSetSourceFile);
 
         btnSetSourceFile.addActionListener((ae)->{int ret=  fileChooser.showDialog(null, "Открыть файл");
             if (ret == JFileChooser.APPROVE_OPTION) {
                 inputFile = fileChooser.getSelectedFile().getAbsolutePath();
-                mainLabel1.setText("inputFile: ");
+                labelSourceFile.setText("inputFile: ");
             }
         }
         );
@@ -77,18 +97,19 @@ public class ParserFrame extends JFrame {
         JButton btnGo = new JButton();
         btnGo.setText("Start parsing");
         btnGo.addActionListener((ae)->MainParse.getWorker_collection());
-        //aligmentPanel.add(btnGo);
+        buttonPanel.add(btnGo);
 
-        //Устанавливаем диспетчер компоновки для //Inner panel
+        /*
+        //Устанавливаем диспетчер компоновки для //Buttons panel
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
-        aligmentPanel.setLayout(gbl);
+        buttonPanel.setLayout(gbl);
 
         //ограничения на элемент - лэйбл
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbl.setConstraints(mainLabel2, gbc);
+        gbl.setConstraints(labelSourceFile, gbc);
 
         //ограничения на элемент - //Button to set Source File
         gbc.anchor = GridBagConstraints.CENTER;
@@ -101,14 +122,14 @@ public class ParserFrame extends JFrame {
         gbc.gridx = 100;
         gbc.gridy = 100;
         gbl.setConstraints(btnSetSourceFile, gbc);
+         */
 
         //введение элементов
-        aligmentPanel.add(mainLabel2);
-        aligmentPanel.add(btnSetSourceFile);
-        aligmentPanel.add(btnGo);
 
-        //вводип панель на главный фрейм
-        mainFrame.getContentPane().add(aligmentPanel);
+
+        //вводи панель на главный фрейм
+        mainFrame.add(statusPanel, BorderLayout.WEST);
+        mainFrame.add(buttonPanel, BorderLayout.EAST);
 
         //показываем глайвный фрейм
         mainFrame.setVisible(true);
